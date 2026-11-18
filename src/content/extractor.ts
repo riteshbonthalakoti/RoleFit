@@ -50,7 +50,10 @@ import type { JobPosting, JobSourcePlatform } from '../core/types';
       titleSelectors: [
         'h1.position-title',
         '[data-test-id="position-title"]',
-        'h1[class*="position-title"]',
+        '[class*="position-title"]',
+        '.job-title',
+        'main h1',
+        'main h2',
         'h1',
         'h2',
       ],
@@ -122,12 +125,23 @@ import type { JobPosting, JobSourcePlatform } from '../core/types';
       .slice(0, MAX_JD_CHARS);
   }
 
+  const IGNORED_TITLES = new Set([
+    'single position',
+    'position',
+    'careers',
+    'jobs',
+    'job details',
+    'search jobs',
+  ]);
+
   function queryFirstText(selectors: string[]): string {
     for (const selector of selectors) {
-      const el = document.querySelector(selector);
-      const text = el?.textContent?.trim();
-      if (text && text.length > 1) {
-        return text.replace(/\s+/g, ' ').slice(0, 180);
+      const nodes = document.querySelectorAll(selector);
+      for (const el of nodes) {
+        const text = el.textContent?.trim().replace(/\s+/g, ' ');
+        if (text && text.length > 2 && !IGNORED_TITLES.has(text.toLowerCase())) {
+          return text.slice(0, 180);
+        }
       }
     }
     return document.title.split('|')[0]?.split(' - ')[0]?.trim().slice(0, 180) || 'Job Posting';

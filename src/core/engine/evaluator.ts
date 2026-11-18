@@ -49,11 +49,26 @@ function countOccurrences(term: string, text: string): number {
   return matches ? matches.length : 0;
 }
 
+function matchesExactCaseBoundary(term: string, rawText: string): boolean {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const rx = new RegExp(`(?:^|[^A-Za-z0-9_+#])${escaped}(?=$|[^A-Za-z0-9_+#])`);
+  return rx.test(rawText);
+}
+
 function findEntryInText(entry: TaxonomyEntry, text: string): { hit: boolean; form?: string; count: number } {
   const forms = getAllForms(entry);
 
-  for (const form of forms) {
+  for (let i = 0; i < forms.length; i++) {
+    const form = forms[i];
     const lower = form.toLowerCase();
+
+    if (i === 0 && entry.caseSensitiveCanonical) {
+      if (matchesExactCaseBoundary(form, text)) {
+        return { hit: true, form, count: Math.max(1, countOccurrences(form, text)) };
+      }
+      continue;
+    }
+
     if (SINGLE_CHAR_LANGUAGES.has(lower)) {
       if (isValidSingleCharInText(lower, text)) {
         return { hit: true, form, count: Math.max(1, countOccurrences(lower, text)) };

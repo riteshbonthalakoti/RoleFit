@@ -100,4 +100,23 @@ describe('RoleFit evaluator', () => {
     expect(report.score).toBeGreaterThanOrEqual(90);
     expect(report.grade).toBe('strong');
   });
+
+  it('does not confuse English "can", "go", "10 ms", or "SPI master" with CAN bus, Go, or Master Degree', () => {
+    const resume = makeProfile(
+      'Pursuing B.Tech in ECE. Implemented SPI master driver with 10 ms latency in C on STM32.',
+    );
+    const job = makeJob(
+      'Embedded Engineer',
+      "You can go far here! Seeking Bachelor's or Master's degree candidate with C and STM32.",
+    );
+    const report = evaluateFit(resume, job);
+    const allTerms = [...report.matchedSkills, ...report.missingSkills].map((s) => s.term);
+    const matchedTerms = report.matchedSkills.map((s) => s.term);
+    const missingTerms = report.missingSkills.map((s) => s.term);
+
+    expect(allTerms).not.toContain('CAN');
+    expect(allTerms).not.toContain('Go');
+    expect(matchedTerms).toContain('Bachelor Degree');
+    expect(missingTerms).toContain('Master Degree');
+  });
 });

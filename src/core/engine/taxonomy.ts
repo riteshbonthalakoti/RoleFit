@@ -4,6 +4,8 @@ export interface TaxonomyEntry {
   canonical: string;
   dimension: SkillDimension;
   aliases?: string[];
+  /** Require exact-case match on the canonical form (e.g., uppercase CAN bus vs English "can"). */
+  caseSensitiveCanonical?: boolean;
 }
 
 /**
@@ -19,7 +21,7 @@ export const SKILL_TAXONOMY: TaxonomyEntry[] = [
   { canonical: 'Java', dimension: 'core_tech' },
   { canonical: 'JavaScript', dimension: 'core_tech', aliases: ['js', 'ecmascript'] },
   { canonical: 'TypeScript', dimension: 'core_tech', aliases: ['ts'] },
-  { canonical: 'Go', dimension: 'core_tech', aliases: ['golang'] },
+  { canonical: 'Go', dimension: 'core_tech', aliases: ['golang'], caseSensitiveCanonical: true },
   { canonical: 'Rust', dimension: 'core_tech' },
   { canonical: 'R', dimension: 'core_tech' },
   { canonical: 'SQL', dimension: 'core_tech' },
@@ -121,7 +123,7 @@ export const SKILL_TAXONOMY: TaxonomyEntry[] = [
   { canonical: 'I2C', dimension: 'core_tech' },
   { canonical: 'SPI', dimension: 'core_tech' },
   { canonical: 'UART', dimension: 'core_tech' },
-  { canonical: 'CAN', dimension: 'core_tech', aliases: ['can bus'] },
+  { canonical: 'CAN', dimension: 'core_tech', aliases: ['can bus', 'can-fd', 'can protocol'], caseSensitiveCanonical: true },
   { canonical: 'USB', dimension: 'core_tech' },
   { canonical: 'PCIe', dimension: 'core_tech' },
   { canonical: 'JTAG', dimension: 'core_tech', aliases: ['swd'] },
@@ -152,7 +154,7 @@ export const SKILL_TAXONOMY: TaxonomyEntry[] = [
   { canonical: 'RTL', dimension: 'core_tech' },
   { canonical: 'VLSI', dimension: 'core_tech' },
   { canonical: 'CMOS', dimension: 'core_tech' },
-  { canonical: 'Timing Closure', dimension: 'core_tech', aliases: ['sta'] },
+  { canonical: 'Timing Closure', dimension: 'core_tech', aliases: ['static timing analysis'] },
 
   // Tools, Hardware Platforms, Cloud & Databases
   { canonical: 'Git', dimension: 'tools_infra' },
@@ -226,8 +228,41 @@ export const SKILL_TAXONOMY: TaxonomyEntry[] = [
   { canonical: 'Electrical Engineering', dimension: 'credentials', aliases: ['electrical and electronics'] },
   { canonical: 'Electronics Engineering', dimension: 'credentials', aliases: ['electronics and communication', 'ece'] },
   { canonical: 'Computer Engineering', dimension: 'credentials' },
-  { canonical: 'Bachelor Degree', dimension: 'credentials', aliases: ['bachelor', 'bachelors', "bachelor's", 'b.tech', 'btech', 'bs', 'b.e'] },
-  { canonical: 'Master Degree', dimension: 'credentials', aliases: ['master', 'masters', "master's", 'm.tech', 'mtech', 'ms'] },
+  {
+    canonical: 'Bachelor Degree',
+    dimension: 'credentials',
+    aliases: [
+      "bachelor's",
+      'bachelors degree',
+      'bachelor of technology',
+      'bachelor of engineering',
+      'bachelor of science',
+      'b.tech',
+      'btech',
+      'b tech',
+      'b.e.',
+      'bsc',
+      'b.sc',
+      'b.s.',
+    ],
+  },
+  {
+    canonical: 'Master Degree',
+    dimension: 'credentials',
+    aliases: [
+      "master's",
+      'masters degree',
+      'master of science',
+      'master of technology',
+      'master of engineering',
+      'm.tech',
+      'mtech',
+      'm tech',
+      'm.s.',
+      'msc',
+      'm.sc',
+    ],
+  },
   { canonical: 'PhD', dimension: 'credentials', aliases: ['doctorate'] },
   { canonical: 'AWS Certified', dimension: 'credentials' },
   { canonical: 'CKA', dimension: 'credentials', aliases: ['ckad'] },
