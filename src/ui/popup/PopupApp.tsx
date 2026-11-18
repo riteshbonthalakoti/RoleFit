@@ -45,7 +45,6 @@ export const PopupApp: React.FC = () => {
   const [manualTitle, setManualTitle] = useState('');
   const [manualBody, setManualBody] = useState('');
 
-  // Keywords tab filters
   const [kwStatus, setKwStatus] = useState<'all' | 'missing' | 'matched'>('all');
   const [kwDimension, setKwDimension] = useState<'all' | SkillDimension>('all');
   const [kwSearch, setKwSearch] = useState('');
@@ -58,7 +57,6 @@ export const PopupApp: React.FC = () => {
     [profiles, activeProfileId],
   );
 
-  // Sync dark mode class on <html>
   useEffect(() => {
     const root = document.documentElement;
     if (settings.theme === 'dark') {
@@ -97,7 +95,6 @@ export const PopupApp: React.FC = () => {
     }
   }, []);
 
-  // Initial hydration
   useEffect(() => {
     void (async () => {
       const loadedSettings = await loadSettings();
@@ -114,7 +111,6 @@ export const PopupApp: React.FC = () => {
     })();
   }, [scanCurrentTab]);
 
-  // Re-evaluate automatically when active profile or job posting changes
   useEffect(() => {
     if (!activeProfile || !job) return;
     const nextReport = evaluateFit(activeProfile, job);
@@ -149,7 +145,7 @@ export const PopupApp: React.FC = () => {
       const parsed = await parseResumeFile(file);
       const profile: ResumeProfile = {
         id: `prof_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-        label: file.name.replace(/\.[^.]+$/, '').slice(0, 32),
+        label: file.name.replace(/\.[^.]+$/, '').slice(0, 28),
         fileName: file.name,
         format: parsed.format,
         text: parsed.text,
@@ -217,6 +213,13 @@ export const PopupApp: React.FC = () => {
     setTimeout(() => setCopiedMissing(false), 1800);
   };
 
+  const jumpToMissingTab = () => {
+    setKwStatus('missing');
+    setKwDimension('all');
+    setKwSearch('');
+    setActiveTab('keywords');
+  };
+
   const filteredSkills = useMemo(() => {
     if (!report) return [];
     const combined =
@@ -236,22 +239,27 @@ export const PopupApp: React.FC = () => {
   }, [report, kwStatus, kwDimension, kwSearch]);
 
   return (
-    <div className="flex min-h-[540px] w-[420px] flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      {/* Top Command Bar */}
-      <header className="flex items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
+    <div className="rf-surface flex min-h-[550px] w-[420px] flex-col bg-slate-50 text-slate-900 dark:text-slate-100">
+      {/* Header */}
+      <header className="flex items-center justify-between border-b border-slate-200/80 bg-white/80 px-4 py-3 backdrop-blur-md dark:border-slate-800/80 dark:bg-[#0B1120]/85">
         <div className="flex items-center gap-2.5">
-          <BrandMark size={30} />
+          <BrandMark size={32} />
           <div>
             <div className="flex items-center gap-1.5">
-              <h1 className="text-sm font-bold tracking-tight">RoleFit</h1>
-              {settings.privateSessionMode && (
-                <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-300">
+              <h1 className="text-sm font-extrabold tracking-tight">RoleFit</h1>
+              {settings.privateSessionMode ? (
+                <span className="rounded-full border border-amber-500/35 bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-300">
                   RAM Only
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-600 dark:text-emerald-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  Local
                 </span>
               )}
             </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400">
-              100% Local ATS Skill Matcher
+            <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400">
+              Precision ATS Signal Analyzer
             </p>
           </div>
         </div>
@@ -260,15 +268,14 @@ export const PopupApp: React.FC = () => {
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-700 transition hover:border-emerald-500/50 hover:text-emerald-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:text-emerald-400"
-            title="Upload a PDF, DOCX, or TXT resume"
+            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700 shadow-xs transition hover:border-emerald-500/50 hover:text-emerald-600 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-200 dark:hover:text-emerald-400"
           >
-            {uploading ? 'Parsing...' : activeProfile ? '+ Resume' : 'Upload Resume'}
+            {uploading ? 'Parsing...' : activeProfile ? '+ Resume' : 'Upload CV'}
           </button>
           <button
             onClick={handleToggleTheme}
-            className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-            title="Toggle theme"
+            className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-200/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            title="Toggle light/dark mode"
           >
             {settings.theme === 'dark' ? (
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -283,23 +290,26 @@ export const PopupApp: React.FC = () => {
         </div>
       </header>
 
-      {/* Active Job Context Bar */}
-      <div className="border-b border-slate-200/80 bg-slate-100/70 px-4 py-2 dark:border-slate-800 dark:bg-slate-900/50">
+      {/* Active Job Context Strip */}
+      <div className="border-b border-slate-200/80 bg-white/60 px-4 py-2 dark:border-slate-800/80 dark:bg-[#0D1526]/70">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0 flex-1">
             {scanning ? (
-              <p className="text-xs text-slate-500">Scanning current tab...</p>
+              <div className="flex items-center gap-2 text-xs text-slate-500">
+                <span className="h-2.5 w-2.5 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+                Scanning active tab...
+              </div>
             ) : job ? (
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 flex-shrink-0 rounded-full bg-emerald-500" />
+                <span className="h-2 w-2 flex-shrink-0 rounded-full bg-emerald-400 shadow-[0_0_6px_#10B981]" />
                 <p className="truncate text-xs font-semibold">{job.title}</p>
-                <span className="flex-shrink-0 rounded bg-slate-200 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                <span className="flex-shrink-0 rounded border border-slate-300/70 bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-slate-600 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300">
                   {job.platform}
                 </span>
               </div>
             ) : (
               <p className="truncate text-xs text-amber-600 dark:text-amber-400">
-                {scanError || 'Open a job posting or paste a JD'}
+                {scanError || 'Open a job posting or click Paste JD'}
               </p>
             )}
           </div>
@@ -307,13 +317,13 @@ export const PopupApp: React.FC = () => {
             <button
               onClick={() => void scanCurrentTab()}
               disabled={scanning}
-              className="rounded px-2 py-0.5 text-[10px] font-medium text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
+              className="rounded-md px-2 py-0.5 text-[10px] font-semibold text-emerald-600 transition hover:bg-emerald-500/10 dark:text-emerald-400"
             >
               Re-scan
             </button>
             <button
               onClick={() => setPasteOpen((v) => !v)}
-              className="rounded px-2 py-0.5 text-[10px] font-medium text-slate-600 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800"
+              className="rounded-md px-2 py-0.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-200/80 dark:text-slate-300 dark:hover:bg-slate-800"
             >
               {pasteOpen ? 'Close' : 'Paste JD'}
             </button>
@@ -321,7 +331,7 @@ export const PopupApp: React.FC = () => {
         </div>
 
         {pasteOpen && (
-          <form onSubmit={handleManualSubmit} className="mt-2 space-y-2 border-t border-slate-200 pt-2 dark:border-slate-800">
+          <form onSubmit={handleManualSubmit} className="mt-2.5 space-y-2 border-t border-slate-200 pt-2.5 dark:border-slate-800">
             <input
               type="text"
               value={manualTitle}
@@ -339,89 +349,129 @@ export const PopupApp: React.FC = () => {
             <button
               type="submit"
               disabled={manualBody.trim().length < 40}
-              className="w-full rounded-lg bg-emerald-600 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-500 disabled:opacity-40"
+              className="w-full rounded-lg bg-gradient-to-r from-emerald-600 to-cyan-600 py-1.5 text-xs font-semibold text-white transition hover:from-emerald-500 hover:to-cyan-500 disabled:opacity-40"
             >
-              Analyze Pasted Description
+              Analyze Job Description
             </button>
           </form>
         )}
       </div>
 
-      {/* 3-Tab Workspace Bar */}
-      <nav className="grid grid-cols-3 border-b border-slate-200 bg-white px-2 pt-1.5 dark:border-slate-800 dark:bg-slate-900">
-        {(
-          [
-            ['overview', 'Overview'],
-            ['keywords', report ? `Skills (${report.matchedSkills.length}/${report.matchedSkills.length + report.missingSkills.length})` : 'Skills'],
-            ['profiles', `Profiles (${profiles.length})`],
-          ] as const
-        ).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => setActiveTab(key)}
-            className={`border-b-2 pb-2 text-xs font-semibold transition ${
-              activeTab === key
-                ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
+      {/* Segmented Control Tabs */}
+      <div className="px-4 pt-3">
+        <nav className="grid grid-cols-3 gap-1 rounded-xl border border-slate-200/80 bg-slate-200/60 p-1 dark:border-slate-800 dark:bg-[#0C1322]">
+          {(
+            [
+              ['overview', 'Overview'],
+              [
+                'keywords',
+                report
+                  ? `Skills ${report.matchedSkills.length}/${report.matchedSkills.length + report.missingSkills.length}`
+                  : 'Skills',
+              ],
+              ['profiles', `Profiles (${profiles.length})`],
+            ] as const
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`rounded-lg py-1.5 text-[11px] font-semibold transition ${
+                activeTab === key
+                  ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-800 dark:text-emerald-300'
+                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      </div>
 
-      {/* Main Content Scroll Area */}
-      <main className="max-h-[410px] flex-1 overflow-y-auto p-4">
+      {/* Main Content */}
+      <main className="max-h-[405px] flex-1 overflow-y-auto px-4 py-3">
         {uploadError && (
-          <div className="mb-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-600 dark:text-rose-300">
+          <div className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-600 dark:text-rose-300">
             {uploadError}
           </div>
         )}
 
         {/* TAB 1: OVERVIEW */}
         {activeTab === 'overview' && (
-          <div className="space-y-3.5">
+          <div className="space-y-3">
+            {profiles.length > 1 && activeProfile && (
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+                <span className="flex-shrink-0 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                  CV:
+                </span>
+                {profiles.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => void handleSelectProfile(p.id)}
+                    className={`flex-shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold transition ${
+                      p.id === activeProfile.id
+                        ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-600 dark:text-emerald-300'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {!activeProfile ? (
-              <div className="rounded-xl border-2 border-dashed border-slate-300 bg-white p-6 text-center dark:border-slate-700 dark:bg-slate-900/60">
-                <p className="text-sm font-semibold">Drop your resume to compute RoleFit</p>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  PDF, DOCX, or TXT. Parsed locally with magic-byte &amp; ZIP-bomb checks.
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-white/80 p-6 text-center dark:border-slate-700 dark:bg-[#0E1627]/80">
+                <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-500">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                </div>
+                <p className="text-sm font-bold">Upload your resume to start</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                  Supports PDF, DOCX, and TXT. Parsed 100% locally with zero network requests.
                 </p>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="mt-4 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-500"
+                  className="mt-4 rounded-xl bg-gradient-to-r from-emerald-600 to-cyan-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:from-emerald-500 hover:to-cyan-500"
                 >
                   Choose Resume File
                 </button>
               </div>
             ) : !report ? (
-              <div className="rounded-xl border border-slate-200 bg-white p-5 text-center dark:border-slate-800 dark:bg-slate-900">
-                <p className="text-sm font-semibold">Resume ready: {activeProfile.fileName}</p>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  Navigate to a job posting and click <strong>Re-scan</strong>, or click <strong>Paste JD</strong> above.
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center dark:border-slate-800 dark:bg-[#0E1627]">
+                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  Active Profile: {activeProfile.fileName}
+                </p>
+                <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
+                  Open any job posting and click <strong>Re-scan</strong>, or click <strong>Paste JD</strong> above.
                 </p>
               </div>
             ) : (
               <>
-                {/* Bento Score Hero */}
-                <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-                  <RadialGauge score={report.score} grade={report.grade} />
+                {/* Score & Dimension Bento Card */}
+                <div className="flex items-center gap-4 rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-[#0E1627]/95">
+                  <RadialGauge score={report.score} grade={report.grade} size={98} />
                   <div className="min-w-0 flex-1 space-y-2">
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                      Profile: <span className="font-semibold text-slate-700 dark:text-slate-200">{report.resumeName}</span>
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="truncate font-semibold text-slate-500 dark:text-slate-400">
+                        {report.resumeName}
+                      </span>
+                      <span className="ml-2 flex-shrink-0 font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
+                        {report.matchedSkills.length}/{report.matchedSkills.length + report.missingSkills.length}
+                      </span>
                     </div>
                     <div className="space-y-1.5">
                       {report.dimensions.map((dim) => (
                         <div key={dim.dimension}>
                           <div className="flex justify-between text-[10px]">
                             <span className="font-medium text-slate-600 dark:text-slate-300">{dim.label}</span>
-                            <span className="tabular-nums text-slate-500">
+                            <span className="tabular-nums text-slate-400">
                               {dim.matched}/{dim.total}
                             </span>
                           </div>
                           <div className="mt-0.5 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
                             <div
-                              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-300"
+                              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400 transition-all duration-300"
                               style={{ width: `${dim.percentage}%` }}
                             />
                           </div>
@@ -431,47 +481,65 @@ export const PopupApp: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Top Priority Gaps */}
-                <div className="rounded-xl border border-slate-200 bg-white p-3.5 dark:border-slate-800 dark:bg-slate-900">
+                {/* Priority Skill Gaps */}
+                <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 dark:border-slate-800 dark:bg-[#0E1627]/95">
                   <div className="mb-2 flex items-center justify-between">
-                    <h2 className="text-xs font-semibold">Top Priority Gaps</h2>
-                    {report.missingSkills.length > 0 && (
-                      <button
-                        onClick={handleCopyMissing}
-                        className="text-[10px] font-medium text-emerald-600 hover:underline dark:text-emerald-400"
-                      >
-                        {copiedMissing ? 'Copied!' : 'Copy missing list'}
-                      </button>
-                    )}
+                    <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      Priority Missing Skills
+                    </h2>
+                    <div className="flex items-center gap-2">
+                      {report.missingSkills.length > 0 && (
+                        <>
+                          <button
+                            onClick={handleCopyMissing}
+                            className="text-[10px] font-semibold text-emerald-600 hover:underline dark:text-emerald-400"
+                          >
+                            {copiedMissing ? 'Copied!' : 'Copy'}
+                          </button>
+                          <button
+                            onClick={jumpToMissingTab}
+                            className="text-[10px] font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                          >
+                            All ({report.missingSkills.length}) →
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
+
                   {report.missingSkills.length === 0 ? (
-                    <p className="text-xs text-emerald-600 dark:text-emerald-400">
-                      Strong coverage — every extracted JD skill appeared in your resume.
+                    <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                      Complete match — every detected JD skill is present in your resume.
                     </p>
                   ) : (
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       <div className="flex flex-wrap gap-1.5">
                         {report.missingSkills.slice(0, 8).map((skill) => (
                           <span
                             key={skill.term}
-                            className="rounded-md border border-rose-500/25 bg-rose-500/10 px-2 py-0.5 text-[11px] font-medium text-rose-700 dark:text-rose-300"
+                            className="inline-flex items-center gap-1 rounded-lg border border-rose-500/25 bg-rose-500/10 px-2 py-0.5 text-[11px] font-semibold text-rose-700 dark:text-rose-300"
                           >
                             {skill.term}
+                            {skill.occurrences > 1 && (
+                              <span className="text-[9px] opacity-70">×{skill.occurrences}</span>
+                            )}
                           </span>
                         ))}
                       </div>
-                      {report.actions.slice(0, 3).map((act) => (
-                        <p key={act.id} className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400">
-                          • {act.guidance}
-                        </p>
-                      ))}
+                      <div className="space-y-1 border-t border-slate-100 pt-2 dark:border-slate-800/80">
+                        {report.actions.slice(0, 2).map((act) => (
+                          <p key={act.id} className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400">
+                            • {act.guidance}
+                          </p>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
 
                 <button
                   onClick={handleOpenFullReport}
-                  className="w-full rounded-xl bg-gradient-to-r from-emerald-600 to-cyan-600 py-2 text-xs font-semibold text-white shadow-sm transition hover:from-emerald-500 hover:to-cyan-500"
+                  className="w-full rounded-xl bg-gradient-to-r from-emerald-600 to-cyan-600 py-2.5 text-xs font-bold text-white shadow-sm transition hover:from-emerald-500 hover:to-cyan-500"
                 >
                   Open Executive Report &amp; Export
                 </button>
@@ -480,11 +548,11 @@ export const PopupApp: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 2: KEYWORDS MATRIX */}
+        {/* TAB 2: SKILLS MATRIX */}
         {activeTab === 'keywords' && (
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {!report ? (
-              <p className="py-8 text-center text-xs text-slate-500">
+              <p className="py-10 text-center text-xs text-slate-500">
                 Run a scan first to inspect extracted skills.
               </p>
             ) : (
@@ -494,7 +562,7 @@ export const PopupApp: React.FC = () => {
                     type="text"
                     value={kwSearch}
                     onChange={(e) => setKwSearch(e.target.value)}
-                    placeholder="Filter skills..."
+                    placeholder="Search skill..."
                     className="flex-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs outline-none focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900"
                   />
                   <select
@@ -516,10 +584,10 @@ export const PopupApp: React.FC = () => {
                     <button
                       key={status}
                       onClick={() => setKwStatus(status)}
-                      className={`rounded-md px-2.5 py-1 text-[11px] font-medium capitalize ${
+                      className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold capitalize transition ${
                         kwStatus === status
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
+                          : 'bg-slate-200/80 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
                       }`}
                     >
                       {status}
@@ -529,23 +597,23 @@ export const PopupApp: React.FC = () => {
 
                 <div className="space-y-1.5">
                   {filteredSkills.length === 0 ? (
-                    <p className="py-4 text-center text-xs text-slate-500">No skills match your filter.</p>
+                    <p className="py-6 text-center text-xs text-slate-500">No skills match your filter.</p>
                   ) : (
                     filteredSkills.map((item) => (
                       <div
                         key={item.term}
-                        className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900"
+                        className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-white px-3 py-2 dark:border-slate-800 dark:bg-[#0E1627]"
                       >
-                        <div>
+                        <div className="min-w-0">
                           <span className="text-xs font-semibold">{item.term}</span>
                           {item.matchedVia && item.matchedVia.toLowerCase() !== item.term.toLowerCase() && (
-                            <span className="ml-1.5 text-[10px] text-slate-400">
+                            <span className="ml-1.5 text-[10px] text-cyan-600 dark:text-cyan-400">
                               via {item.matchedVia}
                             </span>
                           )}
                         </div>
                         <span
-                          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                          className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
                             item.matched
                               ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300'
                               : 'bg-rose-500/15 text-rose-600 dark:text-rose-300'
@@ -564,11 +632,12 @@ export const PopupApp: React.FC = () => {
 
         {/* TAB 3: PROFILES & PRIVACY */}
         {activeTab === 'profiles' && (
-          <div className="space-y-3.5">
-            {/* Resume Profiles */}
-            <div className="rounded-xl border border-slate-200 bg-white p-3.5 dark:border-slate-800 dark:bg-slate-900">
+          <div className="space-y-3">
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 dark:border-slate-800 dark:bg-[#0E1627]">
               <div className="mb-2 flex items-center justify-between">
-                <h2 className="text-xs font-semibold">Saved Resume Profiles (max 5)</h2>
+                <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Resume Profiles (max 5)
+                </h2>
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className="text-[11px] font-semibold text-emerald-600 hover:underline dark:text-emerald-400"
@@ -577,7 +646,7 @@ export const PopupApp: React.FC = () => {
                 </button>
               </div>
               {profiles.length === 0 ? (
-                <p className="text-xs text-slate-500">No resumes loaded yet.</p>
+                <p className="text-xs text-slate-500">No resumes uploaded yet.</p>
               ) : (
                 <div className="space-y-1.5">
                   {profiles.map((prof) => {
@@ -585,9 +654,9 @@ export const PopupApp: React.FC = () => {
                     return (
                       <div
                         key={prof.id}
-                        className={`flex items-center justify-between rounded-lg border px-2.5 py-2 ${
+                        className={`flex items-center justify-between rounded-xl border px-3 py-2 transition ${
                           isActive
-                            ? 'border-emerald-500/50 bg-emerald-500/10'
+                            ? 'border-emerald-500/45 bg-emerald-500/10'
                             : 'border-slate-200 dark:border-slate-800'
                         }`}
                       >
@@ -602,7 +671,7 @@ export const PopupApp: React.FC = () => {
                         </button>
                         <button
                           onClick={() => void handleDeleteProfile(prof.id)}
-                          className="ml-2 rounded px-1.5 py-0.5 text-[10px] font-medium text-rose-500 hover:bg-rose-500/10"
+                          className="ml-2 rounded-md px-1.5 py-0.5 text-[10px] font-semibold text-rose-500 hover:bg-rose-500/10"
                         >
                           Remove
                         </button>
@@ -613,14 +682,15 @@ export const PopupApp: React.FC = () => {
               )}
             </div>
 
-            {/* Privacy Controls */}
-            <div className="rounded-xl border border-slate-200 bg-white p-3.5 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="mb-2 text-xs font-semibold">Privacy &amp; Data Controls</h2>
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 dark:border-slate-800 dark:bg-[#0E1627]">
+              <h2 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Privacy Controls
+              </h2>
               <label className="flex cursor-pointer items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-medium">Private Session Mode (RAM Only)</p>
-                  <p className="text-[10px] text-slate-500">
-                    Keep resumes in browser session memory only — auto-wiped when Chrome closes.
+                  <p className="text-xs font-semibold">Private Session Mode (RAM Only)</p>
+                  <p className="text-[10px] leading-relaxed text-slate-500">
+                    Store resumes in session memory only — automatically wiped when Chrome closes.
                   </p>
                 </div>
                 <input
@@ -633,17 +703,18 @@ export const PopupApp: React.FC = () => {
 
               <button
                 onClick={() => void handleClearAll()}
-                className="mt-3 w-full rounded-lg border border-rose-500/30 bg-rose-500/10 py-1.5 text-[11px] font-semibold text-rose-600 transition hover:bg-rose-500/20 dark:text-rose-300"
+                className="mt-3 w-full rounded-xl border border-rose-500/30 bg-rose-500/10 py-1.5 text-[11px] font-semibold text-rose-600 transition hover:bg-rose-500/20 dark:text-rose-300"
               >
-                Clear All Local Resumes &amp; Scan History
+                Clear All Saved Resumes &amp; Scan History
               </button>
             </div>
 
-            {/* Recent History */}
             {history.length > 0 && (
-              <div className="rounded-xl border border-slate-200 bg-white p-3.5 dark:border-slate-800 dark:bg-slate-900">
-                <h2 className="mb-2 text-xs font-semibold">Recent Scans</h2>
-                <div className="space-y-1.5">
+              <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 dark:border-slate-800 dark:bg-[#0E1627]">
+                <h2 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Recent Scans
+                </h2>
+                <div className="space-y-1">
                   {history.slice(0, 5).map((item) => (
                     <button
                       key={item.id}
@@ -651,10 +722,10 @@ export const PopupApp: React.FC = () => {
                         setReport(item);
                         setActiveTab('overview');
                       }}
-                      className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left transition hover:bg-slate-100 dark:hover:bg-slate-800"
+                      className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left transition hover:bg-slate-100 dark:hover:bg-slate-800/80"
                     >
                       <span className="truncate pr-2 text-xs">{item.jobTitle}</span>
-                      <span className="flex-shrink-0 rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold tabular-nums dark:bg-slate-800">
+                      <span className="flex-shrink-0 rounded-md bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold tabular-nums dark:bg-slate-800">
                         {item.score}%
                       </span>
                     </button>
@@ -667,8 +738,8 @@ export const PopupApp: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-2 text-[10px] text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
-        <span>Zero network calls · Local only</span>
+      <footer className="flex items-center justify-between border-t border-slate-200/80 bg-white/80 px-4 py-2 text-[10px] text-slate-500 dark:border-slate-800/80 dark:bg-[#0B1120]/85 dark:text-slate-400">
+        <span>Zero network calls · Zero tracking</span>
         {report && (
           <button
             onClick={handleOpenFullReport}
