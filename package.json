@@ -1,0 +1,41 @@
+{
+  "name": "rolefit",
+  "version": "1.0.0",
+  "description": "Local-first Chrome extension for transparent ATS resume-to-job matching",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "tsc --noEmit && vite build && node scripts/verify-manifest.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src scripts",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "verify:manifest": "node scripts/verify-manifest.mjs",
+    "package": "npm run build && node scripts/package-zip.mjs"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "mammoth": "^1.13.0",
+    "pdfjs-dist": "^6.5.438",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/chrome": "^0.1.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "@vitest/coverage-v8": "^5.1.1",
+    "eslint": "^9.20.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.25.0",
+    "vite": "^8.0.0",
+    "vitest": "^5.1.1"
+  }
+}
