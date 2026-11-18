@@ -19,6 +19,7 @@ export type JobSourcePlatform =
   | 'indeed'
   | 'ashby'
   | 'wellfound'
+  | 'eightfold'
   | 'naukri'
   | 'internshala'
   | 'generic'

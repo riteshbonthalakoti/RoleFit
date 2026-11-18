@@ -43,6 +43,17 @@ if (!existsSync(join(distDir, 'assets', 'pdf.worker.min.mjs'))) {
   errors.push('Local pdf.worker.min.mjs was not bundled into dist/assets/.');
 }
 
+// chrome.scripting.executeScript runs content.js as a classic script (non-module)
+const contentScriptPath = join(distDir, 'content.js');
+if (!existsSync(contentScriptPath)) {
+  errors.push('dist/content.js is missing.');
+} else {
+  const contentJs = readFileSync(contentScriptPath, 'utf8');
+  if (/^\s*import\b/m.test(contentJs) || /\bexport\s*\{/.test(contentJs)) {
+    errors.push('dist/content.js contains ES module import/export syntax; must be classic IIFE.');
+  }
+}
+
 // Walk dist/ to enforce zero source maps and bundle size cap
 let totalBytes = 0;
 function walk(dir) {
