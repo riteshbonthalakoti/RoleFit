@@ -6,13 +6,17 @@
       <stop offset="100%" stop-color="#07151C"/>
     </linearGradient>
     <radialGradient id="orb1" cx="220" cy="170" r="260" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#10B981" stop-opacity="0.24"/>
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.22"/>
       <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="orb2" cx="980" cy="150" r="280" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#06B6D4" stop-opacity="0.22"/>
       <stop offset="100%" stop-color="#06B6D4" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="whiteGlass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#10B981"/>
       <stop offset="100%" stop-color="#22D3EE"/>
@@ -28,14 +32,11 @@
   <rect width="1200" height="340" rx="22" fill="url(#orb2)"/>
   <rect x="1" y="1" width="1198" height="338" rx="21" stroke="#1E293B" stroke-width="2"/>
 
-  <!-- Left Logo Mark -->
+  <!-- Left Interlocking Precision Fit Mark (no letters) -->
   <g transform="translate(88, 92)">
-    <rect x="0" y="0" width="156" height="156" rx="38" fill="#0F172A" stroke="url(#accent)" stroke-width="3.5"/>
-    <path d="M78 24 A54 54 0 0 1 131 68" stroke="url(#accent)" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
-    <path d="M78 132 A54 54 0 0 1 25 88" stroke="url(#accent)" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
-    <path d="M51 48V109" stroke="#F8FAFC" stroke-width="11" stroke-linecap="round"/>
-    <path d="M51 50H84C97 50 106 59 106 70C106 81 99 89 88 91L109 109" stroke="url(#accent)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="112" cy="45" r="8" fill="#10B981"/>
+    <rect x="0" y="0" width="156" height="156" rx="36" fill="#0F172A" stroke="#1E293B" stroke-width="2.5"/>
+    <path d="M78 26L36 68L72 104L88 88L66 66L94 38L78 26Z" fill="url(#whiteGlass)"/>
+    <path d="M84 52L68 68L90 90L62 118L78 130L120 88L84 52Z" fill="url(#accent)"/>
   </g>
 
   <!-- Center Copy -->
@@ -47,7 +48,6 @@
     <text x="0" y="48" fill="#F8FAFC" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="60" font-weight="800" letter-spacing="-1.5">RoleFit</text>
     <text x="0" y="84" fill="#94A3B8" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" font-weight="500">Precision ATS Resume-to-Job Signal Analyzer</text>
 
-    <!-- Feature Pills -->
     <g transform="translate(0, 108)">
       <rect x="0" y="0" width="154" height="30" rx="8" fill="#0F172A" stroke="#1E293B"/>
       <text x="14" y="19" fill="#E2E8F0" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Zero &lt;all_urls&gt;</text>

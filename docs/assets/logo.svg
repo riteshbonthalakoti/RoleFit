@@ -1,34 +1,28 @@
 <svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="20" y1="16" x2="236" y2="240" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#11192B"/>
-      <stop offset="100%" stop-color="#070B14"/>
+    <linearGradient id="bg" x1="16" y1="12" x2="240" y2="244" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#141B2D"/>
+      <stop offset="100%" stop-color="#060A14"/>
     </linearGradient>
-    <linearGradient id="accent" x1="44" y1="44" x2="212" y2="212" gradientUnits="userSpaceOnUse">
+    <linearGradient id="whiteGlass" x1="60" y1="48" x2="148" y2="176" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+    <linearGradient id="fitAccent" x1="112" y1="88" x2="196" y2="208" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#10B981"/>
       <stop offset="55%" stop-color="#14B8A6"/>
       <stop offset="100%" stop-color="#22D3EE"/>
     </linearGradient>
-    <linearGradient id="rim" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#34D399" stop-opacity="0.7"/>
-      <stop offset="50%" stop-color="#0EA5E9" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#22D3EE" stop-opacity="0.75"/>
-    </linearGradient>
-    <radialGradient id="glow" cx="128" cy="128" r="108" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#10B981" stop-opacity="0.22"/>
-      <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
-    </radialGradient>
   </defs>
-  <rect x="8" y="8" width="240" height="240" rx="58" fill="url(#bg)" stroke="url(#rim)" stroke-width="5"/>
-  <circle cx="128" cy="128" r="96" fill="url(#glow)"/>
-  <!-- Precision outer aperture arcs -->
-  <path d="M128 40 A88 88 0 0 1 214 112" stroke="url(#accent)" stroke-width="6" stroke-linecap="round" opacity="0.45"/>
-  <path d="M128 216 A88 88 0 0 1 42 144" stroke="url(#accent)" stroke-width="6" stroke-linecap="round" opacity="0.45"/>
-  <circle cx="128" cy="128" r="74" stroke="#1E293B" stroke-width="2" stroke-dasharray="6 8"/>
-  <!-- Precision R + Fit Calibration Signal -->
-  <path d="M84 78V178" stroke="#F8FAFC" stroke-width="18" stroke-linecap="round"/>
-  <path d="M84 82H138C159 82 174 96 174 115C174 132 162 145 144 148L178 178" stroke="url(#accent)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Calibration lock node -->
-  <circle cx="182" cy="74" r="13" fill="#10B981"/>
-  <circle cx="182" cy="74" r="21" stroke="#10B981" stroke-width="3" opacity="0.35"/>
+  <rect x="6" y="6" width="244" height="244" rx="56" fill="url(#bg)"/>
+  <!-- Left interlocking frosted plane (Resume) -->
+  <path
+    d="M128 46L62 112L120 170L144 146L108 110L152 66L128 46Z"
+    fill="url(#whiteGlass)"
+  />
+  <!-- Right interlocking luminous plane (Role Fit) -->
+  <path
+    d="M136 86L112 110L148 146L104 190L128 210L194 144L136 86Z"
+    fill="url(#fitAccent)"
+  />
 </svg>
